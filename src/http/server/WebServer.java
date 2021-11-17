@@ -2,11 +2,11 @@
 
 package http.server;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -51,10 +51,21 @@ public class WebServer {
                 // stop reading once a blank line is hit. This
                 // blank line signals the end of the client HTTP
                 // headers.
+                Map<String,String> request = new HashMap<>();
                 String str = ".";
-                while (str != null && !str.equals(""))
+                boolean firstLine=true;
+                while (str != null && !str.equals("")) {
                     str = in.readLine();
-
+                    if(firstLine && str!=null && !str.equals(""))
+                    {
+                        String[] arguments = str.split(" ");
+                        request.put("method",arguments[0]);
+                        request.put("resource",arguments[1]);
+                        request.put("version",arguments[2]);
+                    }
+                    System.out.println(str);
+                    firstLine=false;
+                }
                 // Send the response
                 // Send the headers
                 out.println("HTTP/1.0 200 OK");
@@ -63,7 +74,13 @@ public class WebServer {
                 // this blank line signals the end of the headers
                 out.println("");
                 // Send the HTML page
-                out.println("<H1>Welcome to the Ultra Mini-WebServer</H2>");
+                BufferedReader reader = new BufferedReader(new FileReader("resources"+request.get("resource")));
+                String currentLine;
+                while((currentLine=reader.readLine())!=null){
+                    out.println(currentLine);
+                }
+
+                reader.close();
                 out.flush();
                 remote.close();
             } catch (Exception e) {
