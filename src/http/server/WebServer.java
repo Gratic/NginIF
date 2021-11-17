@@ -2,7 +2,13 @@
 
 package http.server;
 
-import java.io.*;
+import http.server.methods.GetRequest;
+import http.server.methods.Method;
+import http.server.methods.PostRequest;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -47,44 +53,51 @@ public class WebServer {
                         remote.getInputStream()));
                 PrintWriter out = new PrintWriter(remote.getOutputStream());
 
+
                 // read the data sent. We basically ignore it,
                 // stop reading once a blank line is hit. This
                 // blank line signals the end of the client HTTP
                 // headers.
-                Map<String,String> request = new HashMap<>();
+                Map<String, Object> request = new HashMap<>();
                 String str = ".";
-                boolean firstLine=true;
-                while (str != null && !str.equals("")) {
-                    str = in.readLine();
-                    if(firstLine && str!=null && !str.equals(""))
-                    {
-                        String[] arguments = str.split(" ");
-                        request.put("method",arguments[0]);
-                        request.put("resource",arguments[1]);
-                        request.put("version",arguments[2]);
-                    }
+
+                str = in.readLine();
+                if (str != null && !str.equals("")) {
+                    String[] arguments = str.split(" ");
+                    request.put("method", arguments[0]);
+                    request.put("resource", arguments[1]);
+                    request.put("version", arguments[2]);
                     System.out.println(str);
-                    firstLine=false;
-                }
-                // Send the response
-                // Send the headers
-                out.println("HTTP/1.0 200 OK");
-                out.println("Content-Type: text/html");
-                out.println("Server: Bot");
-                // this blank line signals the end of the headers
-                out.println("");
-                // Send the HTML page
-                BufferedReader reader = new BufferedReader(new FileReader("resources"+request.get("resource")));
-                String currentLine;
-                while((currentLine=reader.readLine())!=null){
-                    out.println(currentLine);
                 }
 
-                reader.close();
-                out.flush();
+                while (str != null) {
+                    str = in.readLine();
+
+                    if (str.equals("")) break;
+
+                    System.out.println(str);
+                    String[] arguments = str.split(":", 2);
+                    request.put(arguments[0].strip(), arguments[1].strip());
+                }
+
+
+                Method methodToProcess = null;
+                switch ((String) request.get("method")) {
+                    case "GET" -> {
+                        methodToProcess = new GetRequest();
+                    }
+                    case "POST" -> {
+                        methodToProcess = new PostRequest();
+                    }
+                }
+                if (methodToProcess != null) {
+                    methodToProcess.processMethod(request, out, in);
+                    out.flush();
+                }
                 remote.close();
             } catch (Exception e) {
                 System.out.println("Error: " + e);
+                e.printStackTrace();
             }
         }
     }
