@@ -1,4 +1,4 @@
-package http.server.methods;
+package http.server.modules.methods;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

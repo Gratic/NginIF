@@ -2,9 +2,9 @@
 
 package http.server;
 
-import http.server.methods.GetRequest;
-import http.server.methods.Method;
-import http.server.methods.PostRequest;
+import http.server.modules.methods.GetRequest;
+import http.server.modules.methods.Method;
+import http.server.modules.methods.PostRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

@@ -1,4 +1,4 @@
-package http.server.methods;
+package http.server.modules.methods;
 
 import java.io.*;
 import java.util.HashMap;
