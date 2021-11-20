@@ -2,17 +2,17 @@
 
 package http.server;
 
-import http.server.methods.GetRequest;
-import http.server.methods.Method;
-import http.server.methods.PostRequest;
+import http.server.modules.header.HttpHeader;
+import http.server.modules.methods.Error404Request;
+import http.server.modules.methods.GetRequest;
+import http.server.modules.methods.Method;
+import http.server.modules.methods.PostRequest;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -53,47 +53,30 @@ public class WebServer {
                         remote.getInputStream()));
                 PrintWriter out = new PrintWriter(remote.getOutputStream());
 
-
                 // read the data sent. We basically ignore it,
                 // stop reading once a blank line is hit. This
                 // blank line signals the end of the client HTTP
                 // headers.
-                Map<String, Object> request = new HashMap<>();
-                String str = ".";
-
-                str = in.readLine();
-                if (str != null && !str.equals("")) {
-                    String[] arguments = str.split(" ");
-                    request.put("method", arguments[0]);
-                    request.put("resource", arguments[1]);
-                    request.put("version", arguments[2]);
-                    System.out.println(str);
-                }
-
-                while (str != null) {
-                    str = in.readLine();
-
-                    if (str.equals("")) break;
-
-                    System.out.println(str);
-                    String[] arguments = str.split(":", 2);
-                    request.put(arguments[0].strip(), arguments[1].strip());
-                }
-
+                HttpHeader request = new HttpHeader();
+                request.parseHeader(in);
 
                 Method methodToProcess = null;
-                switch ((String) request.get("method")) {
-                    case "GET" -> {
-                        methodToProcess = new GetRequest();
+                if (request.isResourceFound()) {
+                    switch (request.getMethod()) {
+                        case "GET" -> methodToProcess = new GetRequest();
+                        case "POST" -> methodToProcess = new PostRequest();
                     }
-                    case "POST" -> {
-                        methodToProcess = new PostRequest();
-                    }
+
+
+                } else {
+                    methodToProcess = new Error404Request();
                 }
+
                 if (methodToProcess != null) {
-                    methodToProcess.processMethod(request, out, in);
+                    methodToProcess.processMethod(request, remote.getInputStream(), remote.getOutputStream());
                     out.flush();
                 }
+
                 remote.close();
             } catch (Exception e) {
                 System.out.println("Error: " + e);
