@@ -3,9 +3,11 @@ package http.server;
 import http.server.modules.header.HttpHeader;
 import http.server.modules.methods.*;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
-import java.nio.Buffer;
 
 public class ClientThread extends Thread {
     private final Socket remote;
@@ -32,24 +34,25 @@ public class ClientThread extends Thread {
             Method methodToProcess = null;
             switch (request.getMethod()) {
                 case "GET" -> {
-                    if(request.isResourceFound())
+                    if (request.isResourceFound())
                         methodToProcess = new GetRequest();
                     else
                         methodToProcess = new Error404Request();
                 }
                 case "POST" -> methodToProcess = new PostRequest();
                 case "HEAD" -> {
-                    if(request.isResourceFound())
+                    if (request.isResourceFound())
                         methodToProcess = new HeadRequest();
                     else
                         methodToProcess = new Error404Request();
                 }
                 case "PUT" -> methodToProcess = new PutRequest();
-                default -> {}
+                default -> {
+                }
             }
 
             if (methodToProcess != null) {
-                    methodToProcess.processMethod(request, input, remote.getOutputStream());
+                methodToProcess.processMethod(request, input, remote.getOutputStream());
                 out.flush();
             }
 
