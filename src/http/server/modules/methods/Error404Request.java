@@ -5,16 +5,16 @@ import http.server.modules.header.HttpHeader;
 import http.server.modules.header.HttpStatusCode;
 import http.server.modules.header.ResponseHttpHeader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 
 public class Error404Request implements Method {
 
     @Override
-    public void processMethod(HttpHeader header, InputStream inputStream, OutputStream outputStream) {
+    public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
         File f = new File("resources/404.html");
 
         ResponseHttpHeader responseHttpHeader = new ResponseHttpHeader(HttpStatusCode.NOT_FOUND_404);

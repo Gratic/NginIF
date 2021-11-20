@@ -11,30 +11,22 @@ import java.util.Map;
 
 public class PostRequest implements Method {
     @Override
-    public void processMethod(HttpHeader header, InputStream inputStream, OutputStream outputStream) {
-        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
-
-        StringBuilder str = new StringBuilder();
+    public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
+        String str;
         Map<String, String> post = new HashMap<>();
         MIMEType contentType = header.getContentType();
 
         switch (contentType.getMime()) {
             case "application/x-www-form-urlencoded" -> {
                 try {
-                    if (in.ready()) {
-                        long contentLength = header.getContentLength();
-                        long readTotal = 0L;
-                        while (readTotal != contentLength) {
-                            char[] body = new char[65312];
-                            int readContent = in.read(body, (int) readTotal, 65312);
+                    long contentLength = header.getContentLength();
+                    if (contentLength != -1) {
+                        char[] body = new char[(int) contentLength];
 
-                            readTotal += readContent;
+                        input.read(body, 0, (int) contentLength);
+                        str = String.valueOf(body);
 
-                            System.out.println(body);
-                            str.append(String.valueOf(body));
-                        }
-
-                        String[] parameters = str.toString().split("&");
+                        String[] parameters = str.split("&");
                         for (String parameter : parameters) {
                             String[] arguments = parameter.split("=");
                             post.put(arguments[0].strip(), arguments[1].strip());

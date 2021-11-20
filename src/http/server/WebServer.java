@@ -2,15 +2,6 @@
 
 package http.server;
 
-import http.server.modules.header.HttpHeader;
-import http.server.modules.methods.Error404Request;
-import http.server.modules.methods.GetRequest;
-import http.server.modules.methods.Method;
-import http.server.modules.methods.PostRequest;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -47,37 +38,8 @@ public class WebServer {
             try {
                 // wait for a connection
                 Socket remote = s.accept();
-                // remote is now the connected socket
-                System.out.println("Connection, sending data.");
-                BufferedReader in = new BufferedReader(new InputStreamReader(
-                        remote.getInputStream()));
-                PrintWriter out = new PrintWriter(remote.getOutputStream());
-
-                // read the data sent. We basically ignore it,
-                // stop reading once a blank line is hit. This
-                // blank line signals the end of the client HTTP
-                // headers.
-                HttpHeader request = new HttpHeader();
-                request.parseHeader(in);
-
-                Method methodToProcess = null;
-                if (request.isResourceFound()) {
-                    switch (request.getMethod()) {
-                        case "GET" -> methodToProcess = new GetRequest();
-                        case "POST" -> methodToProcess = new PostRequest();
-                    }
-
-
-                } else {
-                    methodToProcess = new Error404Request();
-                }
-
-                if (methodToProcess != null) {
-                    methodToProcess.processMethod(request, remote.getInputStream(), remote.getOutputStream());
-                    out.flush();
-                }
-
-                remote.close();
+                ClientThread clientThread = new ClientThread(remote);
+                clientThread.start();
             } catch (Exception e) {
                 System.out.println("Error: " + e);
                 e.printStackTrace();
