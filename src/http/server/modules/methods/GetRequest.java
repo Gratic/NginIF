@@ -1,26 +1,21 @@
 package http.server.modules.methods;
 
+import http.server.modules.MIME.MIMEType;
 import http.server.modules.header.HttpHeader;
 import http.server.modules.header.HttpStatusCode;
 import http.server.modules.header.ResponseHttpHeader;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 
 public class GetRequest implements Method {
     @Override
-    public void processMethod(HttpHeader header, InputStream inputStream, OutputStream outputStream) {
-        String resource = header.getResource();
-        System.out.println(resource);
-
+    public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
         File f = new File("resources" + header.getResource());
-
-        ResponseHttpHeader responseHttpHeader = new ResponseHttpHeader(HttpStatusCode.OK_200);
-        responseHttpHeader.setContentLength(f.length());
-        responseHttpHeader.setContentType(header.getContentType());
+        ResponseHttpHeader responseHttpHeader = getHeader(f.length(), header.getContentType());
         responseHttpHeader.write(outputStream);
 
         try {
@@ -30,5 +25,12 @@ public class GetRequest implements Method {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public static ResponseHttpHeader getHeader(long length, MIMEType type) {
+        ResponseHttpHeader responseHttpHeader = new ResponseHttpHeader(HttpStatusCode.OK_200);
+        responseHttpHeader.setContentLength(length);
+        responseHttpHeader.setContentType(type);
+        return responseHttpHeader;
     }
 }
