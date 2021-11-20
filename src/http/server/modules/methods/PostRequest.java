@@ -12,7 +12,6 @@ import java.util.Map;
 public class PostRequest implements Method {
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
-
         String str;
         Map<String, String> post = new HashMap<>();
         MIMEType contentType = header.getContentType();

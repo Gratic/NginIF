@@ -3,11 +3,9 @@ package http.server;
 import http.server.modules.header.HttpHeader;
 import http.server.modules.methods.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
+import java.nio.Buffer;
 
 public class ClientThread extends Thread {
     private final Socket remote;
@@ -21,8 +19,7 @@ public class ClientThread extends Thread {
         try {
             // remote is now the connected socket
             System.out.println("Connection, sending data.");
-            BufferedReader in = new BufferedReader(new InputStreamReader(
-                    remote.getInputStream()));
+            BufferedReader input = new BufferedReader(new InputStreamReader(remote.getInputStream()));
             PrintWriter out = new PrintWriter(remote.getOutputStream());
 
             // read the data sent. We basically ignore it,
@@ -30,23 +27,29 @@ public class ClientThread extends Thread {
             // blank line signals the end of the client HTTP
             // headers.
             HttpHeader request = new HttpHeader();
-            request.parseHeader(in);
+            request.parseHeader(input);
 
             Method methodToProcess = null;
-            if (request.isResourceFound()) {
-                switch (request.getMethod()) {
-                    case "GET" -> methodToProcess = new GetRequest();
-                    case "POST" -> methodToProcess = new PostRequest();
-                    case "HEAD" -> methodToProcess = new HeadRequest();
+            switch (request.getMethod()) {
+                case "GET" -> {
+                    if(request.isResourceFound())
+                        methodToProcess = new GetRequest();
+                    else
+                        methodToProcess = new Error404Request();
                 }
-
-
-            } else {
-                methodToProcess = new Error404Request();
+                case "POST" -> methodToProcess = new PostRequest();
+                case "HEAD" -> {
+                    if(request.isResourceFound())
+                        methodToProcess = new HeadRequest();
+                    else
+                        methodToProcess = new Error404Request();
+                }
+                case "PUT" -> methodToProcess = new PutRequest();
+                default -> {}
             }
 
             if (methodToProcess != null) {
-                methodToProcess.processMethod(request, in, remote.getOutputStream());
+                    methodToProcess.processMethod(request, input, remote.getOutputStream());
                 out.flush();
             }
 

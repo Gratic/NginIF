@@ -5,10 +5,7 @@ import http.server.modules.header.HttpHeader;
 import http.server.modules.header.HttpStatusCode;
 import http.server.modules.header.ResponseHttpHeader;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.file.Files;
 
 public class Error404Request implements Method {

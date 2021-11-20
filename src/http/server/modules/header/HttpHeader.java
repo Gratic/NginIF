@@ -2,9 +2,7 @@ package http.server.modules.header;
 
 import http.server.modules.MIME.MIMEType;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
