@@ -1,47 +1,34 @@
 package http.server.modules.methods;
 
-import http.server.modules.MIME.MIMEType;
 import http.server.modules.header.HttpHeader;
+import http.server.modules.header.HttpStatusCode;
+import http.server.modules.header.ResponseHttpHeader;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.Iterator;
-import java.util.Map;
 
 public class GetRequest implements Method {
     @Override
     public void processMethod(HttpHeader header, InputStream inputStream, OutputStream outputStream) {
-        PrintWriter out = new PrintWriter(outputStream);
-
         String resource = header.getResource();
         System.out.println(resource);
 
-        MIMEType type = header.getResourceType();
-
-        out.println("HTTP/1.0 200 OK");
-        out.println("Content-Type: "+type.getMime());
-        out.println("Server: Bot");
-        out.println("");
-
-        out.flush();
-
-        // Send the HTML page
-
         File f = new File("resources" + header.getResource());
-        try
-        {
+
+        ResponseHttpHeader responseHttpHeader = new ResponseHttpHeader(HttpStatusCode.OK_200);
+        responseHttpHeader.setContentLength(f.length());
+        responseHttpHeader.setContentType(header.getContentType());
+        responseHttpHeader.write(outputStream);
+
+        try {
             byte[] data = Files.readAllBytes(f.toPath());
             outputStream.write(data);
 
-        }catch (IOException e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

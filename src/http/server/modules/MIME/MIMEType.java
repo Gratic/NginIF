@@ -10,46 +10,41 @@ public class MIMEType {
     private String mime;
     private String extension;
 
-    public MIMEType()
-    {
+    public MIMEType() {
         initArrays();
 
         this.mime = "";
         this.extension = "";
     }
 
-    public void setMime(String mime)
-    {
-        if(mimeToExtension.containsKey(mime))
-        {
+    public MIMEType setMime(String mime) {
+        if (mimeToExtension.containsKey(mime)) {
             this.mime = mime;
             this.extension = mimeToExtension.get(mime);
         }
+
+        return this;
     }
 
-    public void setExtension(String extension)
-    {
-        if(extensionToMime.containsKey(extension))
-        {
+    public MIMEType setExtension(String extension) {
+        if (extensionToMime.containsKey(extension)) {
             this.extension = extension;
             this.mime = extensionToMime.get(extension);
         }
+
+        return this;
     }
 
-    public String getMime()
-    {
+    public String getMime() {
         return this.mime;
     }
 
-    public String getExtension()
-    {
+    public String getExtension() {
         return this.extension;
     }
 
-    private static void initArrays()
-    {
-        if (extensionToMime == null || extensionToMime.size() == 0 || mimeToExtension == null || mimeToExtension.size() == 0)
-        {
+    private static void initArrays() {
+        if (extensionToMime == null || extensionToMime.size() == 0 || mimeToExtension == null || mimeToExtension.size() == 0) {
             extensionToMime = new HashMap<>();
             mimeToExtension = new HashMap<>();
 
@@ -94,8 +89,7 @@ public class MIMEType {
             mimeToExtension.put("text/plain", ".txt");
             mimeToExtension.put("text/xml", ".xml");
 
-            for(Map.Entry<String,String> entry : mimeToExtension.entrySet())
-            {
+            for (Map.Entry<String, String> entry : mimeToExtension.entrySet()) {
                 extensionToMime.put(entry.getValue(), entry.getKey());
             }
 
@@ -106,17 +100,14 @@ public class MIMEType {
         }
     }
 
-    public static String getFileExtensionOf(String mime)
-    {
+    public static String getFileExtensionOf(String mime) {
         return mimeToExtension.get(mime);
     }
 
-    public static String getMimeTypeOf(String fileExtension)
-    {
+    public static String getMimeTypeOf(String fileExtension) {
         String fileToGet = fileExtension;
 
-        if(!fileToGet.startsWith("."))
-        {
+        if (!fileToGet.startsWith(".")) {
             fileToGet = "." + fileToGet;
         }
 

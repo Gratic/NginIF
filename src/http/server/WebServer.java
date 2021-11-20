@@ -3,6 +3,7 @@
 package http.server;
 
 import http.server.modules.header.HttpHeader;
+import http.server.modules.methods.Error404Request;
 import http.server.modules.methods.GetRequest;
 import http.server.modules.methods.Method;
 import http.server.modules.methods.PostRequest;
@@ -12,8 +13,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -61,9 +60,8 @@ public class WebServer {
                 HttpHeader request = new HttpHeader();
                 request.parseHeader(in);
 
-                if(request.isResourceFound())
-                {
-                    Method methodToProcess = null;
+                Method methodToProcess = null;
+                if (request.isResourceFound()) {
                     switch (request.getMethod()) {
                         case "GET" -> {
                             methodToProcess = new GetRequest();
@@ -73,17 +71,15 @@ public class WebServer {
                         }
                     }
 
-                    if (methodToProcess != null) {
-                        methodToProcess.processMethod(request, remote.getInputStream(), remote.getOutputStream());
-                        out.flush();
-                    }
-                }
-                else
-                {
-                    //TODO: send 404
+
+                } else {
+                    methodToProcess = new Error404Request();
                 }
 
-
+                if (methodToProcess != null) {
+                    methodToProcess.processMethod(request, remote.getInputStream(), remote.getOutputStream());
+                    out.flush();
+                }
 
                 remote.close();
             } catch (Exception e) {
