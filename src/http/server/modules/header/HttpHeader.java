@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpHeader {
-    private Map<String, Object> parameters;
+    private final Map<String, Object> parameters;
     private MIMEType contentType = null;
 
     public HttpHeader() {

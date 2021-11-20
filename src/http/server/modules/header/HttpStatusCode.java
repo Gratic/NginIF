@@ -1,5 +1,6 @@
 package http.server.modules.header;
 
+@SuppressWarnings("unused")
 public enum HttpStatusCode {
     CONTINUE_100,
     SWITCHING_PROTOCOLS_101,

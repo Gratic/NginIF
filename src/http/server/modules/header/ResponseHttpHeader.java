@@ -4,7 +4,7 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 
 public class ResponseHttpHeader extends HttpHeader {
-    private HttpStatusCode statusCode;
+    private final HttpStatusCode statusCode;
 
     public ResponseHttpHeader(HttpStatusCode statusCode) {
         this.statusCode = statusCode;

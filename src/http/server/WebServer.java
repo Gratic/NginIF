@@ -63,12 +63,8 @@ public class WebServer {
                 Method methodToProcess = null;
                 if (request.isResourceFound()) {
                     switch (request.getMethod()) {
-                        case "GET" -> {
-                            methodToProcess = new GetRequest();
-                        }
-                        case "POST" -> {
-                            methodToProcess = new PostRequest();
-                        }
+                        case "GET" -> methodToProcess = new GetRequest();
+                        case "POST" -> methodToProcess = new PostRequest();
                     }
 
 
