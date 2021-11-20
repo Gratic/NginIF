@@ -23,7 +23,7 @@ public class PutRequest implements Method {
 
                 if (input.ready()) {
 //                    input.read(body);
-                    input.read(body, 0, (int) 10);
+                    input.read(body, 0, (int) contentLength);
                     if (f.exists()) {
                         FileReader fr = new FileReader(f);
                         char[] existingBody = new char[(int) f.length()];
