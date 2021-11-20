@@ -54,7 +54,6 @@ public class WebServer {
                         remote.getInputStream()));
                 PrintWriter out = new PrintWriter(remote.getOutputStream());
 
-
                 // read the data sent. We basically ignore it,
                 // stop reading once a blank line is hit. This
                 // blank line signals the end of the client HTTP
@@ -62,20 +61,30 @@ public class WebServer {
                 HttpHeader request = new HttpHeader();
                 request.parseHeader(in);
 
+                if(request.isResourceFound())
+                {
+                    Method methodToProcess = null;
+                    switch (request.getMethod()) {
+                        case "GET" -> {
+                            methodToProcess = new GetRequest();
+                        }
+                        case "POST" -> {
+                            methodToProcess = new PostRequest();
+                        }
+                    }
 
-                Method methodToProcess = null;
-                switch (request.getMethod()) {
-                    case "GET" -> {
-                        methodToProcess = new GetRequest();
-                    }
-                    case "POST" -> {
-                        methodToProcess = new PostRequest();
+                    if (methodToProcess != null) {
+                        methodToProcess.processMethod(request, remote.getInputStream(), remote.getOutputStream());
+                        out.flush();
                     }
                 }
-                if (methodToProcess != null) {
-                    methodToProcess.processMethod(request, out, in);
-                    out.flush();
+                else
+                {
+                    //TODO: send 404
                 }
+
+
+
                 remote.close();
             } catch (Exception e) {
                 System.out.println("Error: " + e);

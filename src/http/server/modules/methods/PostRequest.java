@@ -9,7 +9,10 @@ import java.util.Map;
 
 public class PostRequest implements Method {
     @Override
-    public void processMethod(HttpHeader header, PrintWriter out, BufferedReader in) {
+    public void processMethod(HttpHeader header, InputStream inputStream, OutputStream outputStream) {
+        BufferedReader in = new BufferedReader(new InputStreamReader(inputStream));
+        PrintWriter out = new PrintWriter(outputStream);
+
         String str;
         Map<String, String> post = new HashMap<>();
         MIMEType contentType = header.getContentType();

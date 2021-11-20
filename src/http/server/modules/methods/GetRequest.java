@@ -4,13 +4,19 @@ import http.server.modules.MIME.MIMEType;
 import http.server.modules.header.HttpHeader;
 
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.util.Iterator;
 import java.util.Map;
 
 public class GetRequest implements Method {
     @Override
-    public void processMethod(HttpHeader header, PrintWriter out, BufferedReader in) {
+    public void processMethod(HttpHeader header, InputStream inputStream, OutputStream outputStream) {
+        PrintWriter out = new PrintWriter(outputStream);
 
         String resource = header.getResource();
         System.out.println(resource);
@@ -22,34 +28,19 @@ public class GetRequest implements Method {
         out.println("Server: Bot");
         out.println("");
 
+        out.flush();
+
         // Send the HTML page
-        switch (type.getMime())
+
+        File f = new File("resources" + header.getResource());
+        try
         {
-            case "text/html" ->
-                {
-                    try {
-                        BufferedReader reader = new BufferedReader(new FileReader("resources" + header.getResource()));
-                        String currentLine;
-                        while ((currentLine = reader.readLine()) != null) {
-                            out.println(currentLine);
-                        }
+            byte[] data = Files.readAllBytes(f.toPath());
+            outputStream.write(data);
 
-                        reader.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            case "image/png" ->
-                {
-                    try {
-                        //BufferedInputStream reader = new BufferedInputStream(new FileReader("resources" + request.get("resource")));
-                        BufferedImage image = ImageIO.read(new File("resources" + header.getResource()));
-                        out.print(image);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+        }catch (IOException e)
+        {
+            e.printStackTrace();
         }
 
     }
