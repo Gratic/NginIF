@@ -1,21 +1,27 @@
 package http.server.modules.methods;
 
+import http.server.modules.MIME.MIMEType;
+import http.server.modules.header.HttpHeader;
+
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class PostRequest implements Method {
     @Override
-    public void processMethod(Map<String, Object> request, PrintWriter out, BufferedReader in) {
+    public void processMethod(HttpHeader header, PrintWriter out, BufferedReader in) {
         String str;
         Map<String, String> post = new HashMap<>();
-        switch ((String) request.get("Content-Type")) {
+        MIMEType contentType = header.getContentType();
+
+        switch (contentType.getMime()) {
             case "application/x-www-form-urlencoded" -> {
                 try {
                     if (in.ready()) {
-                        int contentLength = Integer.parseInt((String) request.get("Content-Length"));
+                        int contentLength = header.getContentLength();
                         char[] body = new char[contentLength];
                         int readContent = in.read(body, 0, contentLength);
+
                         System.out.println(body);
                         str = String.valueOf(body);
                         String[] parameters = str.split("&");
@@ -23,7 +29,7 @@ public class PostRequest implements Method {
                             String[] arguments = parameters[i].split("=");
                             post.put(arguments[0].strip(), arguments[1].strip());
                         }
-                        request.put("parameters", post);
+                        header.put("parameters", post);
                     } else {
                         System.out.println("Je n'ai pas de body");
                     }

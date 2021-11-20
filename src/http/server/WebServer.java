@@ -2,6 +2,7 @@
 
 package http.server;
 
+import http.server.modules.header.HttpHeader;
 import http.server.modules.methods.GetRequest;
 import http.server.modules.methods.Method;
 import http.server.modules.methods.PostRequest;
@@ -58,31 +59,12 @@ public class WebServer {
                 // stop reading once a blank line is hit. This
                 // blank line signals the end of the client HTTP
                 // headers.
-                Map<String, Object> request = new HashMap<>();
-                String str = ".";
-
-                str = in.readLine();
-                if (str != null && !str.equals("")) {
-                    String[] arguments = str.split(" ");
-                    request.put("method", arguments[0]);
-                    request.put("resource", arguments[1]);
-                    request.put("version", arguments[2]);
-                    System.out.println(str);
-                }
-
-                while (str != null) {
-                    str = in.readLine();
-
-                    if (str.equals("")) break;
-
-                    System.out.println(str);
-                    String[] arguments = str.split(":", 2);
-                    request.put(arguments[0].strip(), arguments[1].strip());
-                }
+                HttpHeader request = new HttpHeader();
+                request.parseHeader(in);
 
 
                 Method methodToProcess = null;
-                switch ((String) request.get("method")) {
+                switch (request.getMethod()) {
                     case "GET" -> {
                         methodToProcess = new GetRequest();
                     }
