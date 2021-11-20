@@ -47,6 +47,12 @@ public class ClientThread extends Thread {
                         methodToProcess = new Error404Request();
                 }
                 case "PUT" -> methodToProcess = new PutRequest();
+                case "DELETE" -> {
+                    if (request.isResourceFound())
+                        methodToProcess = new DeleteRequest();
+                    else
+                        methodToProcess = new Error404Request();
+                }
                 default -> {
                 }
             }

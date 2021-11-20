@@ -18,6 +18,7 @@ public class ResponseHttpHeader extends HttpHeader {
         switch (statusCode) {
             case OK_200 -> out.println("200 OK");
             case CREATED_201 -> out.println("201 CREATED");
+            case ACCEPTED_202 -> out.println("202 ACCEPTED");
             case NO_CONTENT_204 -> out.println("204 NO_CONTENT");
 
             case BAD_REQUEST_400 -> out.println("400 BAD_REQUEST");
