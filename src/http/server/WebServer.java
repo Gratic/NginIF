@@ -23,6 +23,8 @@ public class WebServer {
     protected void start() {
         ServerSocket s;
 
+        Route.init();
+
         System.out.println("Webserver starting up on port 3000");
         System.out.println("(press ctrl-c to exit)");
         try {

@@ -42,7 +42,8 @@ public class ClientThread extends Thread {
             if (path.startsWith(pRestraint)) {
                 switch (request.getMethod()) {
                     case "GET" -> {
-                        if (request.isResourceFound())
+                        if (request.isResourceFound() ||
+                                (request.isServlet() && Route.exists(request.getServletRoute())))
                             methodToProcess = new GetRequest();
                         else
                             methodToProcess = new Error404Request();

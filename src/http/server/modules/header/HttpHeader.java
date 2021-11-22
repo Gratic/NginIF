@@ -28,6 +28,19 @@ public class HttpHeader {
                     parameters.put("resource", "/index.html");
                 } else {
                     parameters.put("resource", arguments[1]);
+
+                    String[] get_params = arguments[1].split("\\?");
+                    if (get_params.length == 2) {
+                        Map<String, String> get_param = new HashMap<>();
+
+                        String[] params = get_params[1].split("&");
+                        for (String param : params) {
+                            String[] keyValue = param.split("=");
+                            get_param.put(keyValue[0], keyValue[1]);
+                        }
+
+                        parameters.put("get_parameters", get_param);
+                    }
                 }
                 parameters.put("version", arguments[2]);
                 System.out.println(str);
@@ -58,7 +71,7 @@ public class HttpHeader {
     }
 
     public String getResource() {
-        return (String) parameters.get("resource");
+        return ((String) parameters.get("resource")).split("\\?")[0];
     }
 
     public MIMEType getResourceType() {
@@ -102,5 +115,31 @@ public class HttpHeader {
         File f = new File("resources" + getResource());
 
         return f.exists();
+    }
+
+    public boolean isServlet() {
+        return getResource().startsWith("/servlet");
+    }
+
+    public String getServletRoute() {
+        return getResource().replaceFirst("/servlet", "");
+    }
+
+    public boolean hasGetParameters() {
+        return parameters.containsKey("get_parameters");
+    }
+
+    public Map<String, String> getGetParameters() {
+        return (Map<String, String>) parameters.get("get_parameters");
+    }
+
+    public String getParameter(String key) {
+        String value = null;
+
+        if (hasGetParameters()) {
+            value = getGetParameters().getOrDefault(key, null);
+        }
+
+        return value;
     }
 }
