@@ -39,8 +39,7 @@ public class ClientThread extends Thread {
             Path path = Path.of("resources" + request.getResource()).toAbsolutePath().normalize();
             Path pRestraint = Path.of("resources").toAbsolutePath().normalize();
 
-            if(path.startsWith(pRestraint))
-            {
+            if (path.startsWith(pRestraint)) {
                 switch (request.getMethod()) {
                     case "GET" -> {
                         if (request.isResourceFound())
@@ -70,13 +69,10 @@ public class ClientThread extends Thread {
                     methodToProcess.processMethod(request, input, remote.getOutputStream());
                     out.flush();
                 }
-            }
-            else
-            {
+            } else {
                 ResponseHttpHeader responseHttpHeader = new ResponseHttpHeader(HttpStatusCode.FORBIDDEN_403);
                 responseHttpHeader.write(remote.getOutputStream());
             }
-
 
 
             remote.close();

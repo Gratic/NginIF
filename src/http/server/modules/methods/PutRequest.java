@@ -17,8 +17,7 @@ public class PutRequest implements Method {
         File f = path.toFile();
         HttpStatusCode statusCode;
 
-        if(path.startsWith(pRestraint)) {
-            String str;
+        if (path.startsWith(pRestraint)) {
             try {
                 long contentLength = header.getContentLength();
 
@@ -64,9 +63,7 @@ public class PutRequest implements Method {
                 e.printStackTrace();
                 statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR_500;
             }
-        }
-        else
-        {
+        } else {
             statusCode = HttpStatusCode.FORBIDDEN_403;
         }
 

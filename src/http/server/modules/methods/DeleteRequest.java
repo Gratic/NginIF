@@ -16,15 +16,12 @@ public class DeleteRequest implements Method {
         Path pRestraint = Path.of("resources/uploads").toAbsolutePath().normalize();
 
         HttpStatusCode httpStatusCode;
-        if(path.startsWith(pRestraint))
-        {
+        if (path.startsWith(pRestraint)) {
             File f = path.toFile();
 
             f.delete();
             httpStatusCode = HttpStatusCode.ACCEPTED_202;
-        }
-        else
-        {
+        } else {
             httpStatusCode = HttpStatusCode.FORBIDDEN_403;
         }
 

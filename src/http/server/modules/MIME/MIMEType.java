@@ -111,6 +111,6 @@ public class MIMEType {
             fileToGet = "." + fileToGet;
         }
 
-        return extensionToMime.get(fileExtension);
+        return extensionToMime.get(fileToGet);
     }
 }

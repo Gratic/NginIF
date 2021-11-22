@@ -17,7 +17,7 @@ public class HttpHeader {
     }
 
     public void parseHeader(BufferedReader in) {
-        String str = ".";
+        String str;
 
         try {
             str = in.readLine();
