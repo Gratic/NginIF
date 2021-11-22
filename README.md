@@ -9,7 +9,7 @@
 <li><a href="#features">Features</a></li>
 <li><a href="#restrictive">Restrictive Access</a></li>
 <li><a href="#contributors">Contributors</a></li>
-<li><a href="#development-info">Development Environement</a></li>
+<li><a href="#development-info">Development Environment</a></li>
 </ul>
 
 <h2 id="introduction">Introduction</h2>
