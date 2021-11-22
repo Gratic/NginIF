@@ -1,6 +1,8 @@
 package http.server.modules.header;
 
-@SuppressWarnings("unused")
+/**
+ * Enumeration of all Http Status Code.
+ */
 public enum HttpStatusCode {
     CONTINUE_100,
     SWITCHING_PROTOCOLS_101,

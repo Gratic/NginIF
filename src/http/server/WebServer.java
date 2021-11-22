@@ -6,19 +6,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 /**
- * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
- * Java Copyright 2001 by Jeff Heaton
- * <p>
- * WebServer is a very simple web-server. Any request is responded with a very
- * simple web-page.
- *
- * @author Jeff Heaton
- * @version 1.0
+ * Entry point of the application.
  */
 public class WebServer {
 
     /**
      * WebServer constructor.
+     *
+     * This method is blocking.
      */
     protected void start() {
         ServerSocket s;

@@ -11,7 +11,12 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 
-public class Error404Request implements Method {
+/**
+ * Not really a method but can be implemented as such.
+ *
+ * Action to take when the file doesn't exist.
+ */
+public class Error404Request implements HttpMethod {
 
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {

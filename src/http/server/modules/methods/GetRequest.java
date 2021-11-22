@@ -14,7 +14,13 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class GetRequest implements Method {
+/**
+ * Basic Get Request.
+ *
+ * Can generate a dynamic page if the dynamic resource is in static Route object.
+ * Otherwise, can send any file in /resources.
+ */
+public class GetRequest implements HttpMethod {
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
         Path path = Path.of("resources" + header.getResource()).toAbsolutePath().normalize();
