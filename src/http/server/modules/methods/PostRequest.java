@@ -31,7 +31,7 @@ public class PostRequest implements Method {
                             String[] arguments = parameter.split("=");
                             post.put(arguments[0].strip(), arguments[1].strip());
                         }
-                        header.put("parameters", post);
+                        header.put("post_parameters", post);
                     } else {
                         System.out.println("Je n'ai pas de body");
                     }
