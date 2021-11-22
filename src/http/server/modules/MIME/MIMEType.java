@@ -3,6 +3,10 @@ package http.server.modules.MIME;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * MIME types wrapper.
+ * Basic implementation.
+ */
 public class MIMEType {
     private static Map<String, String> extensionToMime;
     private static Map<String, String> mimeToExtension;

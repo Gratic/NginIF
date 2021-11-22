@@ -8,7 +8,14 @@ import java.io.*;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-public class PutRequest implements Method {
+/**
+ * Basic Put Implementation.
+ *
+ * Can only modify files in /resources/uploads directory.
+ *
+ * Can only receive text files. Binary files aren't supported.
+ */
+public class PutRequest implements HttpMethod {
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
         Path path = Path.of("resources" + header.getResource()).toAbsolutePath().normalize();

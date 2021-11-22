@@ -3,6 +3,11 @@ package http.server.modules.header;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+/**
+ * Daughter class of HttpHeader. This class purpose is to represent the response header.
+ *
+ * Only a subgroup of HttpStatusCode are implemented.
+ */
 public class ResponseHttpHeader extends HttpHeader {
     private final HttpStatusCode statusCode;
 
@@ -10,6 +15,13 @@ public class ResponseHttpHeader extends HttpHeader {
         this.statusCode = statusCode;
     }
 
+    /**
+     * This method write the header onto the outputStream.
+     *
+     * After this method the body can be written onto the outputStream.
+     *
+     * @param outputStream the output stream.
+     */
     public void write(OutputStream outputStream) {
         PrintWriter out = new PrintWriter(outputStream);
 
@@ -37,7 +49,7 @@ public class ResponseHttpHeader extends HttpHeader {
             out.println("Content-Length: " + getContentLength());
         }
 
-        out.println("Server: NginIF v0.1");
+        out.println("Server: NginIF v1");
         out.println("");
 
         out.flush();

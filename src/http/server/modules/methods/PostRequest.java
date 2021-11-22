@@ -9,7 +9,11 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class PostRequest implements Method {
+/**
+ * Basic POST implementation.
+ * Write a file in /resources with the parameters.
+ */
+public class PostRequest implements HttpMethod {
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
         String str;

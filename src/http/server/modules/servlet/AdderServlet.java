@@ -9,6 +9,12 @@ import java.io.BufferedReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 
+/**
+ * Simple dynamic page.
+ * Takes two parameters and returns the result in a HTML webpage.
+ * Accessible via /servlet/adder
+ * Test with /adderServer.html
+ */
 public class AdderServlet implements Servlet {
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {

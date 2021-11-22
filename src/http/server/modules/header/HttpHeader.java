@@ -5,9 +5,15 @@ import http.server.modules.MIME.MIMEType;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Basic and incomplete representation of an HTTP Header.
+ *
+ * Basic process for the basic functionalities implemented in this webserver.
+ */
 public class HttpHeader {
     private final Map<String, Object> parameters;
     private MIMEType contentType = null;
@@ -16,36 +22,54 @@ public class HttpHeader {
         parameters = new HashMap<>();
     }
 
+    /**
+     * Parse the header directly from the input stream.
+     *
+     * @param in a BufferedReader tied to the input stream of the socket.
+     */
     public void parseHeader(BufferedReader in) {
         String str;
 
         try {
+            // Parsing first line
             str = in.readLine();
             if (str != null && !str.equals("")) {
                 String[] arguments = str.split(" ");
+
                 parameters.put("method", arguments[0]);
-                if (arguments[1].equals("/")) {
-                    parameters.put("resource", "/index.html");
+
+                String[] get_params = arguments[1].split("\\?");
+
+                Path r = Path.of("resources"+get_params[0]);
+                File f = r.toFile();
+
+                if (f.isDirectory()) {
+                    // Defining a base resource, if no resource is specified.
+                    parameters.put("resource", arguments[1] + "index.html");
                 } else {
                     parameters.put("resource", arguments[1]);
-
-                    String[] get_params = arguments[1].split("\\?");
-                    if (get_params.length == 2) {
-                        Map<String, String> get_param = new HashMap<>();
-
-                        String[] params = get_params[1].split("&");
-                        for (String param : params) {
-                            String[] keyValue = param.split("=");
-                            get_param.put(keyValue[0], keyValue[1]);
-                        }
-
-                        parameters.put("get_parameters", get_param);
-                    }
                 }
+
+                // Parsing get parameters
+
+                if (get_params.length == 2) {
+                    Map<String, String> get_param = new HashMap<>();
+
+                    String[] params = get_params[1].split("&");
+                    for (String param : params) {
+                        String[] keyValue = param.split("=");
+                        get_param.put(keyValue[0], keyValue[1]);
+                    }
+
+                    parameters.put("get_parameters", get_param);
+                }
+
+                // Parsing version
                 parameters.put("version", arguments[2]);
                 System.out.println(str);
             }
 
+            // Parsing other lines
             while (str != null) {
                 str = in.readLine();
 
@@ -53,6 +77,8 @@ public class HttpHeader {
 
                 System.out.println(str);
                 String[] arguments = str.split(":", 2);
+
+                // Parsing specific header
                 switch (arguments[0].strip()) {
                     case "Content-Type" -> {
                         contentType = new MIMEType();
@@ -133,6 +159,14 @@ public class HttpHeader {
         return (Map<String, String>) parameters.get("get_parameters");
     }
 
+    /**
+     * Directly returns the value of the parameter.
+     *
+     * Warning: only works for GET parameters.
+     *
+     * @param key the name of the parameter.
+     * @return Value corresponding to the key if exists, else null.
+     */
     public String getParameter(String key) {
         String value = null;
 

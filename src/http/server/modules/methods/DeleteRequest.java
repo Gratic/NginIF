@@ -9,7 +9,13 @@ import java.io.File;
 import java.io.OutputStream;
 import java.nio.file.Path;
 
-public class DeleteRequest implements Method {
+/**
+ * DELETE method.
+ *
+ * Method is restricted to /resources/uploads diretory.
+ * If this method is called with a resource in this path, it can delete it.
+ */
+public class DeleteRequest implements HttpMethod {
     @Override
     public void processMethod(HttpHeader header, BufferedReader input, OutputStream outputStream) {
         Path path = Path.of("resources" + header.getResource()).toAbsolutePath().normalize();
