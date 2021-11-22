@@ -1,6 +1,8 @@
 package http.server;
 
 import http.server.modules.header.HttpHeader;
+import http.server.modules.header.HttpStatusCode;
+import http.server.modules.header.ResponseHttpHeader;
 import http.server.modules.methods.*;
 
 import java.io.BufferedReader;
@@ -8,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.nio.file.Path;
 
 public class ClientThread extends Thread {
     private final Socket remote;
@@ -32,35 +35,45 @@ public class ClientThread extends Thread {
             request.parseHeader(input);
 
             Method methodToProcess = null;
-            switch (request.getMethod()) {
-                case "GET" -> {
-                    if (request.isResourceFound())
-                        methodToProcess = new GetRequest();
-                    else
-                        methodToProcess = new Error404Request();
+
+            Path path = Path.of("resources" + request.getResource()).toAbsolutePath().normalize();
+            Path pRestraint = Path.of("resources").toAbsolutePath().normalize();
+
+            if (path.startsWith(pRestraint)) {
+                switch (request.getMethod()) {
+                    case "GET" -> {
+                        if (request.isResourceFound())
+                            methodToProcess = new GetRequest();
+                        else
+                            methodToProcess = new Error404Request();
+                    }
+                    case "POST" -> methodToProcess = new PostRequest();
+                    case "HEAD" -> {
+                        if (request.isResourceFound())
+                            methodToProcess = new HeadRequest();
+                        else
+                            methodToProcess = new Error404Request();
+                    }
+                    case "PUT" -> methodToProcess = new PutRequest();
+                    case "DELETE" -> {
+                        if (request.isResourceFound())
+                            methodToProcess = new DeleteRequest();
+                        else
+                            methodToProcess = new Error404Request();
+                    }
+                    default -> {
+                    }
                 }
-                case "POST" -> methodToProcess = new PostRequest();
-                case "HEAD" -> {
-                    if (request.isResourceFound())
-                        methodToProcess = new HeadRequest();
-                    else
-                        methodToProcess = new Error404Request();
+
+                if (methodToProcess != null) {
+                    methodToProcess.processMethod(request, input, remote.getOutputStream());
+                    out.flush();
                 }
-                case "PUT" -> methodToProcess = new PutRequest();
-                case "DELETE" -> {
-                    if (request.isResourceFound())
-                        methodToProcess = new DeleteRequest();
-                    else
-                        methodToProcess = new Error404Request();
-                }
-                default -> {
-                }
+            } else {
+                ResponseHttpHeader responseHttpHeader = new ResponseHttpHeader(HttpStatusCode.FORBIDDEN_403);
+                responseHttpHeader.write(remote.getOutputStream());
             }
 
-            if (methodToProcess != null) {
-                methodToProcess.processMethod(request, input, remote.getOutputStream());
-                out.flush();
-            }
 
             remote.close();
         } catch (IOException e) {
