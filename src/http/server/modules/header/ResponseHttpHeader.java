@@ -22,7 +22,11 @@ public class ResponseHttpHeader extends HttpHeader {
             case NO_CONTENT_204 -> out.println("204 NO_CONTENT");
 
             case BAD_REQUEST_400 -> out.println("400 BAD_REQUEST");
+            case FORBIDDEN_403 -> out.println("403 FORBIDDEN");
             case NOT_FOUND_404 -> out.println("404 NOT_FOUND");
+
+            case INTERNAL_SERVER_ERROR_500 -> out.println("500 INTERNAL_SERVER_ERROR");
+
         }
 
         if (getContentType() != null) {
