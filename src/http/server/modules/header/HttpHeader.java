@@ -34,8 +34,8 @@ public class HttpHeader {
                         Map<String, String> get_param = new HashMap<>();
 
                         String[] params = get_params[1].split("&");
-                        for (int i = 0; i < params.length; i++) {
-                            String[] keyValue = params[i].split("=");
+                        for (String param : params) {
+                            String[] keyValue = param.split("=");
                             get_param.put(keyValue[0], keyValue[1]);
                         }
 
